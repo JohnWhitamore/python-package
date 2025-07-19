@@ -1,0 +1,8 @@
+setup.py
+model_client/__init__.py
+model_client/model_core.dll
+model_client/wrapper.py
+model_client.egg-info/PKG-INFO
+model_client.egg-info/SOURCES.txt
+model_client.egg-info/dependency_links.txt
+model_client.egg-info/top_level.txt
