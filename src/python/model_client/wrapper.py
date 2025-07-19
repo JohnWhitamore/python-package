@@ -8,7 +8,7 @@ model_core = ctypes.CDLL(dll_path)
 
 # Declare function signatures
 model_core.create_design_matrix.argtypes = [ctypes.c_int, ctypes.c_int]
-model_core.create_design_matrix.restype = ctypes.c_int
+model_core.create_design_matrix.restype = ctypes.POINTER(ctypes.c_int)
 
 model_core.generate_synthetic_data.argtypes = [ctypes.c_double]
 model_core.generate_synthetic_data.restype = ctypes.c_double
