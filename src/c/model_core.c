@@ -4,24 +4,38 @@
 #include <stdlib.h>
 #include <math.h>
 
-int* create_design_matrix(int rows, int cols) {
-    
-	printf("[create_design_matrix] Input: rows=%d, cols=%d\n", rows, cols);
+// Allocate a design matrix of shape [rows x cols]
+int* create_design_matrix(int rows, int cols) 
+{
+    int* result = (int*)malloc(rows * cols * sizeof(int));
 
-    int* result = (int*)malloc(2 * sizeof(int));
-	
-    if (result == NULL) {
+    if (result == NULL) 
+	{
         printf("[create_design_matrix] Allocation failed.\n");
         return NULL;
     }
 
-    result[0] = rows;
-    result[1] = cols;
-	
+    // ... populate matrix with alternating rows [rows, cols] and [cols, rows]
+    for (int i = 0; i < rows; ++i) 
+	{
+        for (int j = 0; j < cols; ++j) 
+		{  
+            result[i * cols + j] = (i + 1) * (j + 1); 
+        }
+    }
+
     return result;
 }
 
-
+// Fully cleans up and nullifies the pointer
+void dispose_array(int** ptr_ref) 
+{
+    if (ptr_ref && *ptr_ref) 
+	{
+        free(*ptr_ref);
+        *ptr_ref = NULL;
+    }
+}
 
 double generate_synthetic_data(double input_value)
 {

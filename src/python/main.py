@@ -1,11 +1,9 @@
-# main.py
+import numpy as np
 
-from model_client.wrapper import model_core
+from model_client.api import create_design_matrix
 
-# print("\nDesign matrix size:", model_core.create_design_matrix(5, 6))
-design_matrix = model_core.create_design_matrix(5, 6)
-print("Design matrix:", design_matrix[0], design_matrix[1])
+dm = create_design_matrix(5, 6)
+print("Design matrix:", dm)
 
-
-print("Synthetic data output:", model_core.generate_synthetic_data(1.23))
-print("Regression result:", model_core.run_regression(2.0, 3.0))
+# print("Synthetic data output:", model_core.generate_synthetic_data(1.23))
+# print("Regression result:", model_core.run_regression(2.0, 3.0))
