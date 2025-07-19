@@ -4,13 +4,24 @@
 #include <stdlib.h>
 #include <math.h>
 
-int create_design_matrix(int num_rows, int num_columns)
-{
-    printf("[create_design_matrix] Requested matrix with %d rows and %d columns.\n", num_rows, num_columns);
-	int output = num_rows * num_columns;
+int* create_design_matrix(int rows, int cols) {
+    
+	printf("[create_design_matrix] Input: rows=%d, cols=%d\n", rows, cols);
+
+    int* result = (int*)malloc(2 * sizeof(int));
 	
-    return output;
+    if (result == NULL) {
+        printf("[create_design_matrix] Allocation failed.\n");
+        return NULL;
+    }
+
+    result[0] = rows;
+    result[1] = cols;
+	
+    return result;
 }
+
+
 
 double generate_synthetic_data(double input_value)
 {
