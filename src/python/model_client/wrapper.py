@@ -15,8 +15,3 @@ model_core.generate_synthetic_data.restype = ctypes.c_double
 
 model_core.run_regression.argtypes = [ctypes.c_double, ctypes.c_double]
 model_core.run_regression.restype = ctypes.c_double
-
-# Call the functions
-print("[Python] Design matrix size:", model_core.create_design_matrix(3, 4))
-print("[Python] Synthetic output:", model_core.generate_synthetic_data(1.5))
-print("[Python] Regression result:", model_core.run_regression(2.0, 3.0))
