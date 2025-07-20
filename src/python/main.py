@@ -2,7 +2,7 @@ import numpy as np
 
 from model_client.api import create_design_matrix
 
-dm = create_design_matrix(5, 6)
+dm = create_design_matrix(4, 4)
 print("Design matrix:", dm)
 
 # print("Synthetic data output:", model_core.generate_synthetic_data(1.23))
