@@ -1,19 +1,21 @@
 import numpy as np
 
-def obtain_posterior(xTx, xTy, prior_covariance, emission_variance_em):
+def obtain_posterior(xTx, xTy, prior_variance, emission_variance_em):
     
+    # Dimensions
+    _, M = xTx.shape
+
     # Posterior covariance
     
     # ... emission precision as reciprocal of emission variance
     emission_precision = 1 / emission_variance_em
     
     # ... prior precision as inverse of diagonal-structured prior covariance
-    _, M = prior_covariance.shape
     prior_precision = np.zeros([M, M])
     
     for m in range(M):
         
-        prior_precision[m, m] = 1.0 / prior_covariance[m, m]
+        prior_precision[m, m] = 1 / prior_variance
     
     # ... obtain posterior values
     posterior_precision = prior_precision + emission_precision * xTx
@@ -24,33 +26,32 @@ def obtain_posterior(xTx, xTy, prior_covariance, emission_variance_em):
     
     return posterior_mean, posterior_covariance
 
-def manage_sparsity(X,prior_covariance, posterior_mean, posterior_covariance):
+def manage_number_of_effective_parameters(X, prior_variance, posterior_mean, posterior_covariance):
     
     # ... dimensions before sparsity
     N, M = X.shape
     
-    # ... arrays (reduced size)
-    gamma = np.zeros(M)
-    alpha = 1 / np.diag(prior_covariance)
-    alpha_new = np.zeros(M)
+    # ... alpha (prior_precision scalar) from prior_variance
+    alpha = 1 / prior_variance
     
-    # ... running total
+    # ... running totals
     sum_gamma = 0.0
+    sum_alpha_new = 0.0
     
-    # ... loop through the basis functions that are still being used
+    # ... loop through the basis functions
     for m in range(M):
         
         # ... prior covariance values
-        gamma[m] = 1.0 - alpha[m] * posterior_covariance[m, m]
-        alpha_new[m] = gamma[m] / (posterior_mean[m] * posterior_mean[m])
+        gamma = 1.0 - alpha * posterior_covariance[m, m]
+        sum_alpha_new += gamma / (posterior_mean[m] * posterior_mean[m])
         
-        # ... update the sum of gamma values
-        sum_gamma += gamma[m]
+        # ... update the sum of gamma values (number of effective parameters)
+        sum_gamma += gamma
         
-    # ... remove basis functions
-    alpha = alpha_new
+    # ... update prior_precision, alpha
+    alpha = sum_alpha_new / M
     
-    return N, sum_gamma, alpha, X, posterior_mean
+    return sum_gamma, alpha
 
 def reestimate_parameter_values(y, X, sum_gamma, alpha, posterior_mean):
     
@@ -63,23 +64,26 @@ def reestimate_parameter_values(y, X, sum_gamma, alpha, posterior_mean):
     denominator = N - sum_gamma
     emission_variance = distance_sq / denominator
     
-    # ... re-estimate the prior_covariance
-    prior_covariance = np.diag(1 / alpha)
+    # ... re-estimate the prior_variance
+    prior_variance = 1 / alpha
     
-    return prior_covariance, emission_variance
+    return prior_variance, emission_variance
 
-def run_m_step(y, X, prior_covariance, posterior_mean, posterior_covariance):
+def run_m_step(y, X, prior_variance, posterior_mean, posterior_covariance):
     
-    # ... manage sparsity
-    N, sum_gamma, alpha, X, posterior_mean = manage_sparsity(X, prior_covariance, posterior_mean, posterior_covariance)
+    # Dimensions
+    N, M = X.shape
+    
+    # ... manage number of effective parameters
+    sum_gamma, alpha = manage_number_of_effective_parameters(X, prior_variance, posterior_mean, posterior_covariance)
     
     # ... re-estimate parameter values
-    prior_covariance, emission_variance = reestimate_parameter_values(y, X, sum_gamma, alpha, posterior_mean)
+    prior_variance, emission_variance = reestimate_parameter_values(y, X, sum_gamma, alpha, posterior_mean)
 
-    return prior_covariance, emission_variance, X, posterior_mean
+    return prior_variance, emission_variance, X, posterior_mean
     
 
-def run_em_algorithm(num_iterations, y, X, prior_mean, prior_covariance, emission_variance_em):
+def run_em_algorithm(num_iterations, y, X, prior_mean, prior_variance, emission_variance_em):
     
     # ... pre-calculate useful inner products xTx, xTy
     xTx = np.dot(np.transpose(X), X)
@@ -88,11 +92,11 @@ def run_em_algorithm(num_iterations, y, X, prior_mean, prior_covariance, emissio
     for i in range(num_iterations):
 
         # ... E-step
-        posterior_mean, posterior_covariance = obtain_posterior(xTx, xTy, prior_covariance, emission_variance_em)
+        posterior_mean, posterior_covariance = obtain_posterior(xTx, xTy, prior_variance, emission_variance_em)
         
         # ... M-step
-        prior_covariance, emission_variance, X, posterior_mean = run_m_step(y, X, 
-                                                          prior_covariance, posterior_mean, posterior_covariance)
+        prior_variance, emission_variance, X, posterior_mean = run_m_step(y, X, 
+                                                          prior_variance, posterior_mean, posterior_covariance)
     
     
     

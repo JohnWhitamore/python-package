@@ -6,13 +6,9 @@ import synthdata
 import em
 
 """
-This code reflects the Relevance Vector Machine of Mike Tipping.
-The idea is to start with a "full" set of basis functions and then
-to prune them in successful iterations of the EM algorithm.
-
-Note that the pruning necessitates that care be taken over the
-certain quantities, including the design matrix, X, whose
-columns each represent a basis function.
+This code implements Bayesian regression. It was adapted from RVM code
+that I had already written. The purpose of this code is to serve as a basis
+for implementing the functionality in C.
 """
 
 """
@@ -68,11 +64,10 @@ num_iterations = 10
 emission_variance_em = emission_variance_gen * 1.2
 prior_mean = np.zeros(M)
 prior_variance = 1.0
-prior_covariance = prior_variance * np.eye(M)
 
 # Run the EM algorithm
 posterior_mean = em.run_em_algorithm(num_iterations, y, X, 
-                                      prior_mean, prior_covariance, emission_variance_em)
+                                      prior_mean, prior_variance, emission_variance_em)
 
 # Predictive density
 predictive_mean = np.dot(X, posterior_mean)
