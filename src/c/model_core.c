@@ -1,32 +1,73 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <gsl/gsl_rng.h>
+#include <gsl/gsl_randist.h>
 
-// Allocate a design matrix of shape [rows x cols]
-int* create_design_matrix(int rows, int cols) 
+double* create_design_matrix(int rows, int cols) 
 {
-    int* result = (int*)malloc(rows * cols * sizeof(int));
+    if (rows != cols) {
+        printf("[create_design_matrix] Error: matrix must be square.\n");
+        return NULL;
+    }
 
+    int size = rows * cols;
+	
+    double* result = (double*)malloc(size * sizeof(double));
+	
     if (result == NULL) 
 	{
         printf("[create_design_matrix] Allocation failed.\n");
         return NULL;
     }
 
-    // ... populate matrix with placeholder values
-    for (int i = 0; i < rows; ++i) 
+    // Initialize GSL random number generator
+    gsl_rng_env_setup();  // optional: respects environment variables if set
+    gsl_rng* rng = gsl_rng_alloc(gsl_rng_default);
+	
+    if (rng == NULL) 
 	{
-        for (int j = 0; j < cols; ++j) 
-		{  
-            result[i * cols + j] = (i + 1) * (j + 1); 
-        }
+        printf("[create_design_matrix] Failed to initialize RNG.\n");
+        free(result);
+        return NULL;
     }
+
+    // Populate with independent N(0,1) samples (mean = 0, stddev = 1)
+    for (int i = 0; i < size; ++i) 
+	{
+        result[i] = gsl_ran_gaussian(rng, 1.0);
+    }
+
+    gsl_rng_free(rng);  // Clean up RNG
 
     return result;
 }
 
+// Allocate a design matrix of shape [rows x cols]
+// int* create_design_matrix(int rows, int cols) 
+// {
+    // int* result = (int*)malloc(rows * cols * sizeof(int));
+
+    // if (result == NULL) 
+	// {
+        // printf("[create_design_matrix] Allocation failed.\n");
+        // return NULL;
+    // }
+
+    // ... populate matrix with placeholder values
+    // for (int i = 0; i < rows; ++i) 
+	// {
+        // for (int j = 0; j < cols; ++j) 
+		// {  
+            // result[i * cols + j] = (i + 1) * (j + 1); 
+        // }
+    // }
+
+    // return result;
+// }
+
 // Fully clean up and nullify the pointer
-void dispose_array(int** ptr_ref) 
+void dispose_array(double** ptr_ref) 
 {
     if (ptr_ref && *ptr_ref) 
 	{
