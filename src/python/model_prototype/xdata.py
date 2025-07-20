@@ -35,12 +35,12 @@ def evaluate_radial_basis_function(n, centre, lengthscale, days_per_year):
     
     return rbf_value
 
-def generate_basis_functions(num_time_steps, seasons_per_year, days_per_year):
+def generate_basis_functions(num_years, seasons_per_year, days_per_year):
     
     # Set dimensions
     
     # ... one time-step per row
-    N = num_time_steps
+    N = num_years * days_per_year
     
     # ... seasonal RBFs plus bias basis function
     M = seasons_per_year + 1

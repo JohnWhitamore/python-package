@@ -28,7 +28,7 @@ def obtain_posterior(xTx, xTy, prior_variance, emission_variance_em):
 
 def manage_number_of_effective_parameters(X, prior_variance, posterior_mean, posterior_covariance):
     
-    # ... dimensions before sparsity
+    # Dimensions
     N, M = X.shape
     
     # ... alpha (prior_precision scalar) from prior_variance
@@ -36,20 +36,25 @@ def manage_number_of_effective_parameters(X, prior_variance, posterior_mean, pos
     
     # ... running totals
     sum_gamma = 0.0
-    sum_alpha_new = 0.0
+    trace_posterior_covariance = 0.0
+    posterior_mean_norm = 0.0
     
     # ... loop through the basis functions
     for m in range(M):
         
-        # ... prior covariance values
+        # ... gamma (number of effective parameters from each basis function)
         gamma = 1.0 - alpha * posterior_covariance[m, m]
-        sum_alpha_new += gamma / (posterior_mean[m] * posterior_mean[m])
-        
-        # ... update the sum of gamma values (number of effective parameters)
         sum_gamma += gamma
         
+        # ... accumulate the trace of the posterior covariance
+        trace_posterior_covariance += posterior_covariance[m, m]
+        
+        # ... accumulate the posterior mean L2 norm
+        posterior_mean_norm += posterior_mean[m] * posterior_mean[m]
+        
     # ... update prior_precision, alpha
-    alpha = sum_alpha_new / M
+    denominator = posterior_mean_norm + trace_posterior_covariance
+    alpha = M / denominator
     
     return sum_gamma, alpha
 
@@ -70,9 +75,6 @@ def reestimate_parameter_values(y, X, sum_gamma, alpha, posterior_mean):
     return prior_variance, emission_variance
 
 def run_m_step(y, X, prior_variance, posterior_mean, posterior_covariance):
-    
-    # Dimensions
-    N, M = X.shape
     
     # ... manage number of effective parameters
     sum_gamma, alpha = manage_number_of_effective_parameters(X, prior_variance, posterior_mean, posterior_covariance)
