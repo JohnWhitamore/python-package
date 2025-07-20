@@ -6,9 +6,10 @@ import synthdata
 import em
 
 """
-This code implements Bayesian regression. It was adapted from RVM code
+This code implements Bayesian regression. It was adapted from RVM code in Python
 that I had already written. The purpose of this code is to serve as a basis
-for implementing the functionality in C.
+for implementing the functionality in C. For that reason, the code uses loops
+where they would not usually be used in Python.
 """
 
 """
@@ -22,13 +23,10 @@ num_years = 2
 days_per_year = 365
 seasons_per_year = 4
 
-# ... number of time-steps
-num_time_steps = days_per_year * num_years
-
 # Generate basis functions
 
 # ... note that X represents the "full" design matrix with all basis functions included
-X = xdata.generate_basis_functions(num_time_steps, seasons_per_year, days_per_year)
+X = xdata.generate_basis_functions(num_years, seasons_per_year, days_per_year)
 
 # ... obtain dimensions
 N, M = X.shape
@@ -40,7 +38,6 @@ Synthetic data generation
 """
 
 # ... generate synthetic weights
-# ... note that w_gen and X_gen reflect only the basis functions that are being used
 w_gen = synthdata.generate_synthetic_weights(X)
 
 # ... generate synthetic observed data
