@@ -1,12 +1,15 @@
 import ctypes
 import os
 
+# File paths
 here = os.path.abspath(os.path.dirname(__file__))
 dll_path = os.path.join(here, "..", "..", "c", "model_core.dll")
+
+# DLL types
 model_core = ctypes.CDLL(os.path.abspath(dll_path))
 model_core = ctypes.CDLL(dll_path)
 
-# Declare function signatures
+# Types for function signatures
 model_core.create_design_matrix.argtypes = [ctypes.c_int, ctypes.c_int]
 model_core.create_design_matrix.restype = ctypes.POINTER(ctypes.c_int)
 

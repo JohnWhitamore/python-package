@@ -1,5 +1,3 @@
-// model_core.h
-
 #ifndef MODEL_CORE_H
 #define MODEL_CORE_H
 
