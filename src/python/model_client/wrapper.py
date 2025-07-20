@@ -7,7 +7,6 @@ dll_path = os.path.join(here, "..", "..", "c", "model_core.dll")
 
 # DLL types
 model_core = ctypes.CDLL(os.path.abspath(dll_path))
-model_core = ctypes.CDLL(dll_path)
 
 # Types for function signatures
 model_core.create_design_matrix.argtypes = [ctypes.c_int, ctypes.c_int]
