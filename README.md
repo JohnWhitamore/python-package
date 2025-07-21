@@ -10,16 +10,16 @@ Create a clean folder structure that:
 
 ```
 project-name/
-├── src/
-│   ├── c/
-│   │   ├── model_core.c
-│   │   ├── model_core.h
-│   │   └── model_core.dll  <- compiled DLL (from .c)
-│   └── python/
-│       ├── setup.py
-│       └── model_client/
-│           ├── __init__.py
-│           └── wrapper.py  <- Python bindings via ctypes
+- src/
+- - c/
+- - - model_core.c
+- - - model_core.h
+- - -model_core.dll
+- - python/
+- - - setup.py
+- - - model_client/
+- - - __init__.py
+- - - wrapper.py
 ```
 
 ### **Write the C library**
