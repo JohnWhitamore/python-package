@@ -33,6 +33,7 @@ double* create_design_matrix(int rows, int cols)
     }
 
     // Populate with independent N(0,1) samples (mean = 0, stddev = 1)
+	// ... placeholder functionality
     for (int i = 0; i < size; ++i) 
 	{
         result[i] = gsl_ran_gaussian(rng, 1.0);
@@ -42,29 +43,6 @@ double* create_design_matrix(int rows, int cols)
 
     return result;
 }
-
-// Allocate a design matrix of shape [rows x cols]
-// int* create_design_matrix(int rows, int cols) 
-// {
-    // int* result = (int*)malloc(rows * cols * sizeof(int));
-
-    // if (result == NULL) 
-	// {
-        // printf("[create_design_matrix] Allocation failed.\n");
-        // return NULL;
-    // }
-
-    // ... populate matrix with placeholder values
-    // for (int i = 0; i < rows; ++i) 
-	// {
-        // for (int j = 0; j < cols; ++j) 
-		// {  
-            // result[i * cols + j] = (i + 1) * (j + 1); 
-        // }
-    // }
-
-    // return result;
-// }
 
 // Fully clean up and nullify the pointer
 void dispose_array(double** ptr_ref) 
@@ -76,6 +54,7 @@ void dispose_array(double** ptr_ref)
     }
 }
 
+// Placeholder
 double generate_synthetic_data(double input_value)
 {
     double output = input_value + 42.0;
@@ -84,6 +63,7 @@ double generate_synthetic_data(double input_value)
     return output;
 }
 
+// Placeholder
 double run_regression(double x, double y)
 {
     double slope = 2.0;
